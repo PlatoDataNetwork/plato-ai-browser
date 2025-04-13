@@ -2,19 +2,19 @@
 
 const QUICK_LINKS = [
   { name: 'gTrade Solana', url: 'https://sol.gains.trade', category: 'DEX' },
-  { name: 'Pump.fun', url: 'https://pump.fun', category: 'DeFi' },
+  // { name: 'Pump.fun', url: 'https://pump.fun', category: 'DeFi' },
   { name: 'Jup.ag', url: 'https://jup.ag', category: 'DeFi' },
-  { name: 'BloomBot', url: 'https://www.bloombot.app', category: 'DeFi' },
+  // { name: 'BloomBot', url: 'https://www.bloombot.app', category: 'DeFi' },
   { name: 'Solana Token Creator', url: 'https://slerf.tools/en-us', category: 'DeFi' },
-  { name: 'Fragmetric', url: 'https://fragmetric.xyz', category: 'DeFi' },
-  { name: 'DLN', url: 'https://dappradar.com', category: 'DeFi' },
+  // { name: 'Fragmetric', url: 'https://fragmetric.xyz', category: 'DeFi' },
+  // { name: 'DLN', url: 'https://dappradar.com', category: 'DeFi' },
   { name: 'marginfi', url: 'https://app.marginfi.com', category: 'DeFi' },
   { name: 'Save', url: 'https://save.finance', category: 'DeFi' },
   { name: 'Sharky', url: 'https://sharky.fi', category: 'DeFi' },
   { name: 'Raydium', url: 'https://raydium.io', category: 'Exchange' },
   { name: 'Saber', url: 'https://saberdao.so', category: 'Exchange' },
-  { name: 'Kamino Finance', url: 'https://app.kamino.finance', category: 'Exchange' },
-  { name: 'Star Atlas', url: 'https://staratlas.com', category: 'Gaming' },
+  // { name: 'Kamino Finance', url: 'https://app.kamino.finance', category: 'Exchange' },
+  // { name: 'Star Atlas', url: 'https://staratlas.com', category: 'Gaming' },
   { name: 'Moonwalk Fitness', url: 'https://moonwalk.fit', category: 'Gaming' },
   { name: 'Slotana Coin Flip', url: 'https://slotana.io', category: 'Gaming' },
   { name: 'GNME MINING GAME', url: 'https://www.gnmemining.com', category: 'Gaming' },
@@ -35,7 +35,7 @@ export function HomeContent({ onNavigate }: HomeContentProps) {
             <button
               key={link.name}
               onClick={() => onNavigate(link.url)}
-              className="group flex flex-col items-center bg-white cursor-pointer rounded-[24px] p-6 hover:shadow-lg hover:shadow-purple-500/10 transition-all duration-300"
+              className="group flex flex-col items-center bg-white cursor-0 rounded-[24px] p-6 hover:shadow-lg hover:shadow-purple-500/10 transition-all duration-300"
             >
               <div className="w-full flex items-center justify-center mb-4">
                 <img 
