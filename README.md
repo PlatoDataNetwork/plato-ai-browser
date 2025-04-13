@@ -854,6 +854,13 @@ By outlining these, we keep a roadmap in mind for the system to evolve beyond th
 
 ScreenShots:
 
+<img width="1792" alt="image" src="https://github.com/user-attachments/assets/35012ae6-15a4-495b-8968-e51c6e07fc3b" />
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+
 <img width="1792" alt="image" src="https://github.com/user-attachments/assets/10a09454-f099-436f-9370-bba184d20b73" />
 &nbsp;
 &nbsp;
