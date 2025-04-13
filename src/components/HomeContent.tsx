@@ -2,24 +2,36 @@
 
 const QUICK_LINKS = [
   { name: 'gTrade Solana', url: 'https://sol.gains.trade', category: 'DEX' },
-  // { name: 'Pump.fun', url: 'https://pump.fun', category: 'DeFi' },
   { name: 'Jup.ag', url: 'https://jup.ag', category: 'DeFi' },
-  // { name: 'BloomBot', url: 'https://www.bloombot.app', category: 'DeFi' },
   { name: 'Solana Token Creator', url: 'https://slerf.tools/en-us', category: 'DeFi' },
-  // { name: 'Fragmetric', url: 'https://fragmetric.xyz', category: 'DeFi' },
-  // { name: 'DLN', url: 'https://dappradar.com', category: 'DeFi' },
   { name: 'marginfi', url: 'https://app.marginfi.com', category: 'DeFi' },
   { name: 'Save', url: 'https://save.finance', category: 'DeFi' },
   { name: 'Sharky', url: 'https://sharky.fi', category: 'DeFi' },
   { name: 'Raydium', url: 'https://raydium.io', category: 'Exchange' },
   { name: 'Saber', url: 'https://saberdao.so', category: 'Exchange' },
   // { name: 'Kamino Finance', url: 'https://app.kamino.finance', category: 'Exchange' },
-  // { name: 'Star Atlas', url: 'https://staratlas.com', category: 'Gaming' },
   { name: 'Moonwalk Fitness', url: 'https://moonwalk.fit', category: 'Gaming' },
   { name: 'Slotana Coin Flip', url: 'https://slotana.io', category: 'Gaming' },
   { name: 'GNME MINING GAME', url: 'https://www.gnmemining.com', category: 'Gaming' },
-  { name: 'Layer3', url: 'https://layer3.xyz', category: 'Gaming' },
-  { name: 'Galxe', url: 'https://www.galxe.com', category: 'Gaming' },
+  // { name: 'Layer3', url: 'https://layer3.xyz', category: 'Social' },
+  // { name: 'Galxe', url: 'https://www.galxe.com', category: 'Social' },
+  { name: 'Solpot', url: 'https://solpot.com', category: 'Gambling' },
+  { name: 'Predict 6', url: 'https://predict6.gg', category: 'Gambling' },
+  { name: 'SLM Games', url: 'https://slm.games', category: 'Gambling' },
+  { name: 'RACE Poker', url: 'https://race.poker', category: 'Gambling' },
+  { name: 'Magic Eden', url: 'https://magiceden.io', category: 'Marketplace' },
+  { name: 'Honeyland', url: 'https://honey.land', category: 'Marketplace' },
+  { name: 'SolSea', url: 'https://solsea.io', category: 'Marketplace' },
+  { name: 'Solanart', url: 'https://solanart.io', category: 'Marketplace' },
+  { name: 'Hype.fun', url: 'https://hype.fun', category: 'Marketplace' },
+  { name: 'Cudis', url: 'https://www.cudis.xyz', category: 'Other' },
+  { name: 'Sol Incinerator', url: 'https://sol-incinerator.com', category: 'Other' },
+  { name: 'GamerBoom', url: 'https://gamerboom.org', category: 'Gaming' },
+  { name: 'MomoAI', url: 'https://www.momoai.io', category: 'Other' },
+  { name: 'QnA3', url: 'https://qna3.ai', category: 'Social' },
+  { name: 'Hawksight', url: 'https://www.hawksight.co', category: 'DeFi' },
+  { name: 'Streamflow', url: 'https://streamflow.finance', category: 'DeFi' },
+  { name: 'Lavarage', url: 'https://lavarage.xyz', category: 'DeFi' },
 ];
 
 interface HomeContentProps {
@@ -48,12 +60,6 @@ export function HomeContent({ onNavigate }: HomeContentProps) {
               <span className="text-sm text-[#3e466a] mt-1.5">{link.category}</span>
             </button>
           ))}
-          <button className="group flex flex-col items-center bg-gradient-to-br from-[#2a2b36] to-[#32334a] rounded-[24px] p-6 hover:shadow-lg hover:shadow-purple-500/10 transition-all duration-300">
-            <div className="w-full flex items-center justify-center mb-4">
-              <span className="text-3xl text-gray-400 font-light">+</span>
-            </div>
-            <span className="text-sm text-white font-medium">Add a site</span>
-          </button>
         </div>
       </div>
     </div>
