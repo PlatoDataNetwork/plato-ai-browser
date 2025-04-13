@@ -30,7 +30,7 @@ export function HomeContent({ onNavigate }: HomeContentProps) {
   return (
     <div className="flex flex-col items-center h-full bg-[#1a1b26] bg-gradient-to-br from-purple-900/20 via-blue-900/20 to-orange-900/20 rounded-md p-12">
       <div className="w-full max-w-7xl">
-        <div className="grid grid-cols-6 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-6">
           {QUICK_LINKS.map((link) => (
             <button
               key={link.name}
