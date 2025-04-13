@@ -2,8 +2,6 @@ Hackathon Submission Summary: Solana Web3 Browser
 
 For this Solana Hackathon, we built and delivered a fully functional Web3 Browser for the Solana ecosystem, designed to provide a seamless, immersive, and secure interface for users to explore and interact with the growing universe of Solana-based decentralized applications (dApps). Our submission combines cutting-edge performance, intuitive design, and powerful blockchain integration—offering a next-gen user experience that bridges the gap between traditional web interfaces and decentralized networks.
 
-⸻
-
 Key Achievements
 
 1.⁠ ⁠Cross-Platform Web3 Browser Experience
@@ -37,7 +35,6 @@ We prioritized performance and simplicity in our UI/UX design, delivering:
 
 With full WebSocket integration and support for Solana’s subscription features, users receive real-time updates on balance changes, transaction confirmations, and dApp activity—without needing to refresh or manually query.
 
-⸻
 
 Why This Matters
 
@@ -45,14 +42,3 @@ Our Solana Web3 Browser submission represents a major step toward mainstream usa
 
 We believe this is the foundation for what the “Web3 browser experience” should be: fast, user-friendly, decentralized, and mobile-ready. Through this submission, we demonstrated that it’s possible to deliver a unified Solana experience without the need for extensions, third-party wallets, or multiple apps.
 
-⸻
-
-In under 1000 words, what we achieved:
-	•	Built a fully functional cross-platform Solana Web3 Browser
-	•	Integrated a secure, native Solana wallet with key management and transaction signing
-	•	Enabled live interaction with a Solana validator node
-	•	Created a curated, searchable dApp discovery interface
-	•	Delivered a clean, immersive, high-speed UI/UX optimized for mobile and desktop
-	•	Provided real-time blockchain updates for wallet and dApp activity
-
-This submission sets the stage for the next generation of Web3 user experiences—and positions Solana at the forefront of decentralized application access.
