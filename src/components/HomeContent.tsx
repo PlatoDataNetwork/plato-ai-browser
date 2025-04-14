@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import data from '../data/data.json';
 
 const QUICK_LINKS = [
   { name: 'gTrade Solana', url: 'https://sol.gains.trade', category: 'DEX' },
@@ -309,12 +310,181 @@ const AGENT = [
   }
 ];
 
+interface DappData {
+  id: number;
+  name: string;
+  logo: string;
+  statistic: {
+    totalBalanceInFiat: number | null;
+    uawCount: number | null;
+    uawCountChange: number | null;
+    totalVolumeInFiat: number | null;
+    totalVolumeChange: number | null;
+  };
+}
+
 interface HomeContentProps {
   onNavigate: (url: string) => void;
 }
 
 export function HomeContent({ onNavigate }: HomeContentProps) {
   const [activeTab, setActiveTab] = useState('Quick Links');
+
+  const getPageNumbers = (currentPage: number, totalPages: number) => {
+    if (totalPages <= 7) {
+      return Array.from({ length: totalPages }, (_, i) => i + 1);
+    }
+  
+    if (currentPage <= 3) {
+      return [1, 2, 3, 4, 5, '...', totalPages];
+    }
+  
+    if (currentPage >= totalPages - 2) {
+      return [1, '...', totalPages - 4, totalPages - 3, totalPages - 2, totalPages - 1, totalPages];
+    }
+  
+    return [
+      1,
+      '...',
+      currentPage - 1,
+      currentPage,
+      currentPage + 1,
+      '...',
+      totalPages
+    ];
+  };
+
+  const formatNumber = (num: number | null) => {
+    if (num === null) return '-';
+    if (num >= 1000000) return `$${(num / 1000000).toFixed(2)}M`;
+    if (num >= 1000) return `$${(num / 1000).toFixed(2)}k`;
+    return `$${num.toFixed(2)}`;
+  };
+
+  const formatPercentage = (num: number | null) => {
+    if (num === null) return '-';
+    return `${num.toFixed(2)}%`;
+  };
+
+  // Add these state variables after the activeTab state
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
+  
+  // Add this pagination helper function before renderDappsTable
+  const paginatedData = () => {
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    return (data as DappData[]).slice(startIndex, endIndex);
+  };
+  
+  // Modify the renderDappsTable function
+  const renderDappsTable = () => {
+    const totalPages = Math.ceil((data as DappData[]).length / itemsPerPage);
+  
+    return (
+      <div className="w-full overflow-x-auto bg-[#0a0a0a] border border-[#ffffff24] rounded-xl shadow-lg">
+        <table className="w-full min-w-full">
+          <thead>
+            <tr className="border-b border-[#ffffff24]">
+              <th className="px-6 py-3 text-left text-md font-medium  text-[#ededed]">#</th>
+              <th className="px-6 py-3 text-left text-md font-medium  text-[#ededed]">Name</th>
+              <th className="px-6 py-3 text-right text-md font-medium  text-[#ededed]">Balance</th>
+              <th className="px-6 py-3 text-right text-md font-medium  text-[#ededed]">UAW</th>
+              <th className="px-6 py-3 text-right text-md font-medium  text-[#ededed]">% UAW</th>
+              <th className="px-6 py-3 text-right text-md font-medium  text-[#ededed]">Volume</th>
+              <th className="px-6 py-3 text-right text-md font-medium  text-[#ededed]">% Volume</th>
+            </tr>
+          </thead>
+          <tbody>
+            {paginatedData().map((dapp, index) => (
+              <tr key={dapp.id} className="hover:bg-[#3d4569] border-b border-[#ffffff24]">
+                <td className="px-6 py-4 text-sm text-[#ededed]">
+                  {(currentPage - 1) * itemsPerPage + index + 1}
+                </td>
+                <td className="px-6 py-4">
+                  <div className="flex items-center">
+                    <img src={dapp.logo} alt={dapp.name} className="w-8 h-8 rounded-full mr-3" />
+                    <span className="text-sm font-medium  text-[#ededed]">{dapp.name}</span>
+                  </div>
+                </td>
+                <td className="px-6 py-4 text-right text-sm text-gray-500">
+                  {formatNumber(dapp.statistic.totalBalanceInFiat)}
+                </td>
+                <td className="px-6 py-4 text-right text-sm text-gray-500">
+                  {dapp.statistic.uawCount?.toLocaleString() || '-'}
+                </td>
+                <td className={`px-6 py-4 text-right text-sm ${
+                  (dapp.statistic.uawCountChange || 0) >= 0 ? 'text-green-500' : 'text-red-500'
+                }`}>
+                  {formatPercentage(dapp.statistic.uawCountChange)}
+                </td>
+                <td className="px-6 py-4 text-right text-sm text-gray-500">
+                  {formatNumber(dapp.statistic.totalVolumeInFiat)}
+                </td>
+                <td className={`px-6 py-4 text-right text-sm ${
+                  (dapp.statistic.totalVolumeChange || 0) >= 0 ? 'text-green-500' : 'text-red-500'
+                }`}>
+                  {formatPercentage(dapp.statistic.totalVolumeChange)}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        
+        {/* Update pagination controls styling */}
+        <div className="flex items-center justify-between px-6 py-3 border-t border-[#ffffff24]">
+          <div className="flex items-center">
+            <span className="text-sm text-[#ededed]">
+              Showing {((currentPage - 1) * itemsPerPage) + 1} to {Math.min(currentPage * itemsPerPage, (data as DappData[]).length)} of {(data as DappData[]).length} entries
+            </span>
+          </div>
+          <div className="flex space-x-2">
+            <button
+              onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+              disabled={currentPage === 1}
+              className={`px-3 py-1 rounded-md ${
+                currentPage === 1 
+                  ? 'bg-[#1a1b26] text-[#666] cursor-not-allowed' 
+                  : 'bg-[#3d4569] text-white hover:bg-[#3d4569]'
+              }`}
+            >
+              Previous
+            </button>
+            {getPageNumbers(currentPage, totalPages).map((page, index) => (
+              page === '...' ? (
+                <span key={`ellipsis-${index}`} className="px-3 py-1 text-[#ededed]">
+                  {page}
+                </span>
+              ) : (
+                <button
+                  key={page}
+                  onClick={() => setCurrentPage(Number(page))}
+                  className={`px-3 py-1 rounded-md ${
+                    currentPage === Number(page)
+                      ? 'bg-[#3d4569] text-white'
+                      : 'bg-[#1a1b26] text-[#ededed] hover:bg-[#32334a]'
+                  }`}
+                >
+                  {page}
+                </button>
+              )
+            ))}
+            <button
+              onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+              disabled={currentPage === totalPages}
+              className={`px-3 py-1 rounded-md ${
+                currentPage === totalPages 
+                  ? 'bg-[#1a1b26] text-[#666] cursor-not-allowed' 
+                  : 'bg-[#3d4569] text-white hover:bg-purple-600'
+              }`}
+            >
+              Next
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  };
 
   const renderContent = () => {
     if (activeTab === 'Quick Links') {
@@ -361,6 +531,8 @@ export function HomeContent({ onNavigate }: HomeContentProps) {
           ))}
         </div>
       );
+    } else if (activeTab === 'D App') {
+      return renderDappsTable();
     }
   };
 
@@ -368,7 +540,7 @@ export function HomeContent({ onNavigate }: HomeContentProps) {
     <div className="flex flex-col items-center h-full bg-[#1a1b26] bg-black rounded-md p-12">
       <div className="w-full max-w-7xl">
         <div className="flex justify-center space-x-4 mb-4">
-          {['Quick Links', 'AI Agent'].map((tab) => (
+          {['Quick Links', 'AI Agent', 'D App'].map((tab) => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
