@@ -40,227 +40,272 @@ const AGENT = [
   {
     "name": "AR / VR",
     "category": "AR / VR Intelligence",
-    "image": "/agent/ar-vr.jpg"
+    "image": "/agent/ar-vr.jpg",
+    "link" : "https://phplaravel-1277108-5416810.cloudwaysapps.com/dashboard/user/openai/chat/ai-chat/ar-vr-WOmzD"
   },
   {
     "name": "Cleantech",
     "category": "Clean Technology Intelligence",
-    "image": "/agent/kZmK-cleantech-avatar.jpg"
+    "image": "/agent/kZmK-cleantech-avatar.jpg",
+    "link" : "https://phplaravel-1277108-5416810.cloudwaysapps.com/dashboard/user/openai/chat/ai-chat/cleantech-AS3Y0"
   },
   {
     "name": "Aviation",
     "category": "Aviation Intelligence",
-    "image": "/agent/hYOt-aviation-avatar.jpg"
+    "image": "/agent/hYOt-aviation-avatar.jpg",
+    "link" : "https://phplaravel-1277108-5416810.cloudwaysapps.com/dashboard/user/openai/chat/ai-chat/aviation-aowaE"
   },
   {
     "name": "Defense",
     "category": "Defense Intelligence",
-    "image": "/agent/Py94-defense-avatar.jpg"
+    "image": "/agent/Py94-defense-avatar.jpg",
+    "link" : "https://phplaravel-1277108-5416810.cloudwaysapps.com/dashboard/user/openai/chat/ai-chat/defense-FKoSR"
   },
   {
     "name": "Carbon",
     "category": "Carbon Intelligence",
-    "image": "/agent/Ni03-carbon-avatar.jpg"
+    "image": "/agent/Ni03-carbon-avatar.jpg",
+    "link" : "https://phplaravel-1277108-5416810.cloudwaysapps.com/dashboard/user/openai/chat/ai-chat/carbon-J6sJV"
   },
   {
     "name": "Cybersecurity",
     "category": "Cybersecurity Intelligence",
-    "image": "/agent/R3M9-cybersecurity-avatar.jpg"
+    "image": "/agent/R3M9-cybersecurity-avatar.jpg",
+    "link" : "https://phplaravel-1277108-5416810.cloudwaysapps.com/dashboard/user/openai/chat/ai-chat/cybersecurity-YFK6Z"
   },
   {
     "name": "Biotechnology",
     "category": "Biotechnology Intelligence",
-    "image": "/agent/1Uv2-biotechnology-avatar.jpg"
+    "image": "/agent/1Uv2-biotechnology-avatar.jpg",
+    "link" : "https://phplaravel-1277108-5416810.cloudwaysapps.com/dashboard/user/openai/chat/ai-chat/biotechnology-9Lx8C"
   },
   {
     "name": "Clinical Trials",
     "category": "Clinical Trials Intelligence",
-    "image": "/agent/GDUL-clinical-trials-avatar.jpg"
+    "image": "/agent/GDUL-clinical-trials-avatar.jpg",
+    "link" : "https://phplaravel-1277108-5416810.cloudwaysapps.com/dashboard/user/openai/chat/ai-chat/clinical-trials-xIR5l"
   },
   {
     "name": "Big Data",
     "category": "Big Data Intelligence",
-    "image": "/agent/cv2t-big-data-avatar.jpg"
+    "image": "/agent/cv2t-big-data-avatar.jpg",
+    "link" : "https://phplaravel-1277108-5416810.cloudwaysapps.com/dashboard/user/openai/chat/ai-chat/big-data-rGb61"
   },
   {
     "name": "Ecommerce",
     "category": "Ecommerce Intelligence",
-    "image": "/agent/ZdnB-ecommerce-avatar.jpg"
+    "image": "/agent/ZdnB-ecommerce-avatar.jpg",
+    "link" : "https://phplaravel-1277108-5416810.cloudwaysapps.com/dashboard/user/openai/chat/ai-chat/ecommerce-tRTfU"
   },
   {
     "name": "Crowdfunding",
     "category": "Crowdfunding Intelligence",
-    "image": "/agent/Vvvd-crowdfunding-avatar.jpg"
+    "image": "/agent/Vvvd-crowdfunding-avatar.jpg",
+    "link" : "https://phplaravel-1277108-5416810.cloudwaysapps.com/dashboard/user/openai/chat/ai-chat/crowdfunding-HT6Qv"
   },
   {
     "name": "Aerospace",
     "category": "Aerospace Intelligence",
-    "image": "/agent/TVn0-aerospace-avatar.jpg"
+    "image": "/agent/TVn0-aerospace-avatar.jpg",
+    "link" : "https://phplaravel-1277108-5416810.cloudwaysapps.com/dashboard/user/openai/chat/ai-chat/aerospace-ABEUs"
   },
   {
     "name": "Code",
     "category": "Coding Intelligence",
-    "image": "/agent/Knml-code-avatar.jpg"
+    "image": "/agent/Knml-code-avatar.jpg",
+    "link" : "https://phplaravel-1277108-5416810.cloudwaysapps.com/dashboard/user/openai/chat/ai-chat/code-wgCAB"
   },
   {
     "name": "EdTech",
     "category": "EdTech Intelligencee",
-    "image": "/agent/0sFQ-edtech-avatar.jpg"
+    "image": "/agent/0sFQ-edtech-avatar.jpg",
+    "link" : "https://phplaravel-1277108-5416810.cloudwaysapps.com/dashboard/user/openai/chat/ai-chat/edtech-OjER2"
   },
   {
     "name": "Energy",
     "category": "Energy Intelligencee",
-    "image": "/agent/wq0O-energy-avatar.jpg"
+    "image": "/agent/wq0O-energy-avatar.jpg",
+    "link" : "https://phplaravel-1277108-5416810.cloudwaysapps.com/dashboard/user/openai/chat/ai-chat/energy-aqjOo"
   },
   {
     "name": "Esports",
     "category": "Esports Intelligencee",
-    "image": "/agent/kusr-esports-avatar.jpg"
+    "image": "/agent/kusr-esports-avatar.jpg",
+    "link" : "https://phplaravel-1277108-5416810.cloudwaysapps.com/dashboard/user/openai/chat/ai-chat/esports-GcHxn"
   },
   {
     "name": "FinTech",
     "category": "FinTech Intelligence",
-    "image": "/agent/kusr-esports-avatar.jpg"
+    "image": "/agent/kusr-esports-avatar.jpg",
+    "link" : "https://phplaravel-1277108-5416810.cloudwaysapps.com/dashboard/user/openai/chat/ai-chat/fintech-qFjVs"
   },
   {
     "name": "Forex",
     "category": "Forex Intelligence",
-    "image": "/agent/5PF1-forex-avatar.jpg"
+    "image": "/agent/5PF1-forex-avatar.jpg",
+    "link" : "https://phplaravel-1277108-5416810.cloudwaysapps.com/dashboard/user/openai/chat/ai-chat/forex-ltcxe"
   },
   {
     "name": "Gaming",
     "category": "Gaming Intelligence",
-    "image": "/agent/jaFq-gaming-avatar.jpg"
+    "image": "/agent/jaFq-gaming-avatar.jpg",
+    "link" : "https://phplaravel-1277108-5416810.cloudwaysapps.com/dashboard/user/openai/chat/ai-chat/gaming-2bBJM"
   },
   {
     "name": "IoT",
     "category": "IoT Intelligence",
-    "image": "/agent/HzfL-iot-avatar.jpg"
+    "image": "/agent/HzfL-iot-avatar.jpg",
+    "link" : "https://phplaravel-1277108-5416810.cloudwaysapps.com/dashboard/user/openai/chat/ai-chat/iot-sfDZe"
   },
   {
     "name": "Medical Devices",
     "category": "Medical Device Intelligence",
-    "image": "/agent/kP9F-medical-devices-avatar.jpg"
+    "image": "/agent/kP9F-medical-devices-avatar.jpg",
+    "link" : "https://phplaravel-1277108-5416810.cloudwaysapps.com/dashboard/user/openai/chat/ai-chat/medical-devices-qe4BI"
   },
   {
     "name": "Nano Technology",
     "category": "Nano Technology Intelligence",
-    "image": "/agent/YTMr-nano-technology-avatar.jpg"
+    "image": "/agent/YTMr-nano-technology-avatar.jpg",
+    "link" : "https://phplaravel-1277108-5416810.cloudwaysapps.com/dashboard/user/openai/chat/ai-chat/nano-technology-p6sIA"
   },
   {
     "name": "NFTs",
     "category": "NFTs Intelligence",
-    "image": "/agent/op48-nfts-avatar.jpg"
+    "image": "/agent/op48-nfts-avatar.jpg",
+    "link" : "https://phplaravel-1277108-5416810.cloudwaysapps.com/dashboard/user/openai/chat/ai-chat/nfts-XYq9k"
   },
   {
     "name": "Patents",
     "category": "Patents Intelligence",
-    "image": "/agent/QzMv-patents-avatar.jpg"
+    "image": "/agent/QzMv-patents-avatar.jpg",
+    "link" : "https://phplaravel-1277108-5416810.cloudwaysapps.com/dashboard/user/openai/chat/ai-chat/patents-nVSCk"
   },
   {
     "name": "Payments",
     "category": "Payments Intelligence",
-    "image": "/agent/al0Z-payments-avatar.jpg"
+    "image": "/agent/al0Z-payments-avatar.jpg",
+    "link" : "https://phplaravel-1277108-5416810.cloudwaysapps.com/dashboard/user/openai/chat/ai-chat/payments-BJNDe"
   },
   {
     "name": "Private Equity",
     "category": "Private Equity Intelligence",
-    "image": "/agent/e1Km-private-equity-avatar.jpg"
+    "image": "/agent/e1Km-private-equity-avatar.jpg",
+    "link" : "https://phplaravel-1277108-5416810.cloudwaysapps.com/dashboard/user/openai/chat/ai-chat/private-equity-eEOkP"
   },
   {
     "name": "Cannabis",
     "category": "Cannabis Intelligence",
-    "image": "/agent/VUIC-cannabis-avatar.jpg"
+    "image": "/agent/VUIC-cannabis-avatar.jpg",
+    "link" : "https://phplaravel-1277108-5416810.cloudwaysapps.com/dashboard/user/openai/chat/ai-chat/cannabis-YuBpZ"
   },
   {
     "name": "Psychotropics",
     "category": "Psychotropics Intelligence",
-    "image": "/agent/49gu-psychotropics-avatar.jpg"
+    "image": "/agent/49gu-psychotropics-avatar.jpg",
+    "link" : "https://phplaravel-1277108-5416810.cloudwaysapps.com/dashboard/user/openai/chat/ai-chat/psychotropics-YVZvd"
   },
   {
     "name": "Quantum",
     "category": "Quantum Intelligence",
-    "image": "/agent/p6zC-quantum-avatar.jpg"
+    "image": "/agent/p6zC-quantum-avatar.jpg",
+    "link" : "https://phplaravel-1277108-5416810.cloudwaysapps.com/dashboard/user/openai/chat/ai-chat/quantum-3BjgT"
   },
   {
     "name": "Real Estate",
     "category": "Real Estate Intelligence",
-    "image": "/agent/RxqX-real-estate-avatar.jpg"
+    "image": "/agent/RxqX-real-estate-avatar.jpg",
+    "link" : "https://phplaravel-1277108-5416810.cloudwaysapps.com/dashboard/user/openai/chat/ai-chat/real-estate-kep6A"
   },
   {
     "name": "Saas",
     "category": "Saas Intelligence",
-    "image": "/agent/JrOT-saas-avatar.jpg"
+    "image": "/agent/JrOT-saas-avatar.jpg",
+    "link" : "https://phplaravel-1277108-5416810.cloudwaysapps.com/dashboard/user/openai/chat/ai-chat/saas-2r9aa"
   },
   {
     "name": "Semiconductor",
     "category": "Semiconductor Intelligence",
-    "image": "/agent/Af6Y-semiconductor-avatar.jpg"
+    "image": "/agent/Af6Y-semiconductor-avatar.jpg",
+    "link" : "https://phplaravel-1277108-5416810.cloudwaysapps.com/dashboard/user/openai/chat/ai-chat/semiconductor-m8oq1"
   },
   {
     "name": "SEO",
     "category": "SEO Intelligence",
-    "image": "/agent/WLgV-seo-avatar.jpg"
+    "image": "/agent/WLgV-seo-avatar.jpg",
+    "link" : "https://phplaravel-1277108-5416810.cloudwaysapps.com/dashboard/user/openai/chat/ai-chat/seo-VBY1J"
   },
   {
     "name": "Solar",
     "category": "Solar Intelligence",
-    "image": "/agent/QKgQ-solar-avatar.jpg"
+    "image": "/agent/QKgQ-solar-avatar.jpg",
+    "link" : "https://phplaravel-1277108-5416810.cloudwaysapps.com/dashboard/user/openai/chat/ai-chat/solar-IoSGq"
   },
   {
     "name": "Startup",
     "category": "Startup Intelligence",
-    "image": "/agent/cYi7-startups-avatar.jpg"
+    "image": "/agent/cYi7-startups-avatar.jpg",
+    "link" : "https://phplaravel-1277108-5416810.cloudwaysapps.com/dashboard/user/openai/chat/ai-chat/startups-l60Zy"
   },
   {
     "name": "Stem Cell",
     "category": "Stem Cell Intelligence",
-    "image": "/agent/cpLZ-stem-cell-avatar.jpg"
+    "image": "/agent/cpLZ-stem-cell-avatar.jpg",
+    "link" : "https://phplaravel-1277108-5416810.cloudwaysapps.com/dashboard/user/openai/chat/ai-chat/stem-cell-Tmzb9"
   },
   {
     "name": "Supply Chain",
     "category": "Supply Chain Intelligence",
-    "image": "/agent/2uyB-supply-chain-avatar.jpg"
+    "image": "/agent/2uyB-supply-chain-avatar.jpg",
+    "link" : "https://phplaravel-1277108-5416810.cloudwaysapps.com/dashboard/user/openai/chat/ai-chat/supply-chain-iRRQP"
   },
   {
     "name": "Trading",
     "category": "Trading Intelligence",
-    "image": "/agent/VJNj-trading-avatar.jpg"
+    "image": "/agent/VJNj-trading-avatar.jpg",
+    "link" : "https://phplaravel-1277108-5416810.cloudwaysapps.com/dashboard/user/openai/chat/ai-chat/trading-QXQtS"
   },
   {
     "name": "Venture Capital",
     "category": "Venture Capital Intelligence",
-    "image": "/agent/Y0Z6-venture-capital-avatar.jpg"
+    "image": "/agent/Y0Z6-venture-capital-avatar.jpg",
+    "link" : "https://phplaravel-1277108-5416810.cloudwaysapps.com/dashboard/user/openai/chat/ai-chat/venture-capital-mMYMg"
   },
   {
     "name": "Waste Management",
     "category": "Waste Management Intelligence",
-    "image": "/agent/WLOE-waste-management-avatar.jpg"
+    "image": "/agent/WLOE-waste-management-avatar.jpg",
+    "link" : "https://phplaravel-1277108-5416810.cloudwaysapps.com/dashboard/user/openai/chat/ai-chat/waste-management-hqKpA"
   },
   {
     "name": "Blockchain",
     "category": "Blockchain Intelligence",
-    "image": "/agent/FJ76-blockchain-avatar.jpg"
+    "image": "/agent/FJ76-blockchain-avatar.jpg",
+    "link" : "https://phplaravel-1277108-5416810.cloudwaysapps.com/dashboard/user/openai/chat/ai-chat/blockchain-VP6Gu"
   },
   {
     "name": "AI",
     "category": "AI Intelligence",
-    "image": "/agent/9JOW-ai-avatar.jpg"
+    "image": "/agent/9JOW-ai-avatar.jpg",
+    "link" : "https://phplaravel-1277108-5416810.cloudwaysapps.com/dashboard/user/openai/chat/ai-chat/ai-MTXjF"
   },
   {
     "name": "ESG",
     "category": "ESG Intelligence",
-    "image": "/agent/cZ6t-esg-avatar.jpg"
+    "image": "/agent/cZ6t-esg-avatar.jpg",
+    "link" : "https://phplaravel-1277108-5416810.cloudwaysapps.com/dashboard/user/openai/chat/ai-chat/esg-4gDJB"
   },
   {
     "name": "Plato Intelligence",
     "category": "Plato Intelligence",
-    "image": "/agent/0m2c-plato-intelligence-avatar.jpg"
+    "image": "/agent/0m2c-plato-intelligence-avatar.jpg",
+    "link" : "https://phplaravel-1277108-5416810.cloudwaysapps.com/dashboard/user/openai/chat/ai-chat/plato-intelligence-Wc2Xp"
   },
   {
     "name": "Automotive",
     "category": "Automotive Intelligence",
-    "image": "/agent/jg6q-automotive-avatar.jpg"
+    "image": "/agent/jg6q-automotive-avatar.jpg",
+    "link" : "https://phplaravel-1277108-5416810.cloudwaysapps.com/dashboard/user/openai/chat/ai-chat/automotive-zjwtP"
   }
 ];
 
@@ -300,6 +345,7 @@ export function HomeContent({ onNavigate }: HomeContentProps) {
           {AGENT.map((agent) => (
             <button
               key={agent.name}
+              onClick={() => onNavigate(agent.link)}
               className="group flex flex-col items-center  bg-[#0a0a0a] border border-[#ffffff24] cursor-pointer rounded-[24px] p-6 hover:shadow-lg hover:shadow-purple-500/10 transition-all duration-300"
             >
               <div className="w-full flex items-center justify-center mb-4">
