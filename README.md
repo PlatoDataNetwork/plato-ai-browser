@@ -286,7 +286,6 @@ Authentication: The Node API might not need typical auth since the client is the
 
 WebSockets: We can use Socket.io on Node and the client for simplicity to handle events. Alternatively, use the Solana web3.js subscription on Node side and then broadcast via Socket.io to connected clients.
 
-
 Security: Use Helmet middleware for Express to set secure headers, rate limiter to avoid abuse of endpoints like /api/dapps. Also ensure all connections are over HTTPS.
 
 Solana Blockchain and Rust:
@@ -352,499 +351,306 @@ Security is paramount in a Web3 application that manages private keys and funds.
 5.1 Key Management & Encryption: The user’s private keys are generated and stored locally, never sent to any server. We employ strong encryption for any stored secrets:
 On web/desktop, the key is encrypted using a key derived from the user’s password (using PBKDF2 or scrypt for key stretching). The derived key encrypts the mnemonic or the raw private key with AES-256. This ciphertext is stored (in IndexedDB or the file system). Only after the user enters the correct password (which is hashed and verified) do we decrypt and load the key into memory.
 
-
 On mobile, the OS provides secure storage. For example, on iOS the Keychain is hardware-backed and accessible only to our app; on Android, the Keystore can store an AES key or use biometric protection. We take advantage of these by either storing the encrypted key similarly (with the user’s PIN as decryptor) or storing the key in the secure enclave accessible via biometric auth. In addition, the app can utilize platform features like biometric prompt each time a signature is requested (for extra protection, albeit with some user inconvenience).
 5.2 Transaction Security & User Consent: Every transaction or message signature requires explicit user approval. There are no “auto-sign” features enabled by default. This means a dApp cannot drain funds or execute transactions without the user clicking “Approve” while viewing the details. The transaction details dialog is designed to be tamper-proof and clear:
 We ensure the dApp cannot alter the appearance of the wallet prompt. In WebView/Electron, the dApp content is separate from the wallet UI, so it can’t inject misleading info into the prompt.
 
-
 The prompt shows human-readable info whenever possible (we might integrate known token mint addresses to show token symbols, etc.). If something is unknown or complex, we warn the user (e.g., “This transaction interacts with an unknown program. Proceed with caution.”).
 
-
 We use the concept of domains/origins similar to how browser wallets do: the dApp’s origin (URL) is displayed on the prompt. This helps the user ensure they intended to trigger this action on that site. It mitigates phishing where a malicious site could open a connection pretending to be another – the origin can’t be spoofed due to browser security.
+
 5.3 Secure Communication (Client-Server and Client-Blockchain): All communication is encrypted:
 The Node.js API endpoints are only accessible over HTTPS. We will obtain TLS certificates (using Let’s Encrypt or similar) for the server domain. This prevents eavesdropping or modification of data in transit. For instance, when the client fetches the dApp list or submits a signed transaction via the Node, an attacker on the network cannot alter it.
 
-
 The Solana RPC calls from the client or server also use TLS (wss:// or https:// endpoints). If we connect to devnet.solana.com, that uses HTTPS. If we run our own validator RPC, we will enable TLS on it or place it behind an Nginx reverse proxy with TLS.
 
-
 Internally, if the mobile app communicates between the WebView (dApp) and the React Native side, it uses the RN messaging API which is not exposed to other apps. In Electron, we enable contextIsolation and use the secure IPC channel – no remote module and no direct access to Node from the web content. This ensures the only way for the dApp to trigger wallet actions is via our vetted handlers.
-5.4 Isolation of dApp Content: The dApp runs in a sandbox. It cannot access local resources or execute arbitrary native code:
-In Electron, nodeIntegration for the dApp window is false, so it cannot call require('fs') or other Node APIs. Also, we use a preload script that only exposes a controlled API (the wallet interface). We will carefully sanitize inputs that come through this channel.
 
+Isolation of dApp Content: The dApp runs in a sandbox. It cannot access local resources or execute arbitrary native code: In Electron, nodeIntegration for the dApp window is false, so it cannot call require('fs') or other Node APIs. Also, we use a preload script that only exposes a controlled API (the wallet interface). We will carefully sanitize inputs that come through this channel.
 
 In React Native WebView, we set originWhitelist to only allow the intended domain or use allowingNavigations to constrain where it can go. We also intercept (via onShouldStartLoadWithRequest) any navigation attempts – if the dApp tries to navigate outside (maybe to a login page on another domain), we can handle that (possibly open in external browser or block if unsafe).
 
-
 We disable any features like file downloads or geolocation in the WebView unless needed for a specific reason.
 5.5 Preventing Malicious dApps: While we cannot guarantee all dApps are safe, our dApp directory can mark or exclude known malicious sites. We can maintain a blocklist of URLs that are known phishing sites; if the user tries to navigate to one (or if somehow a malicious link is in a dApp’s content and the user clicks it), we intercept and warn the user. This is similar to how browsers have safe browsing warnings. At least for our curated list, we vet them. For user-entered URLs (if we allow a manual URL entry feature), we might cross-check against a safe list.
-5.6 Solana-Specific Security:
-Nonce and Recent Blockhash: When the wallet creates a transaction to sign, it uses a recent blockhash. We must ensure it’s updated to avoid “duplicate signature” issues or transaction expiration. The Node server can help by providing a fresh blockhash quickly. This is more of a functional detail but ensures transactions are valid and not replayable after a certain time (once blockhash expires, the TX can’t be replayed).
 
+Solana-Specific Security:
+Nonce and Recent Blockhash: When the wallet creates a transaction to sign, it uses a recent blockhash. We must ensure it’s updated to avoid “duplicate signature” issues or transaction expiration. The Node server can help by providing a fresh blockhash quickly. This is more of a functional detail but ensures transactions are valid and not replayable after a certain time (once blockhash expires, the TX can’t be replayed).
 
 Solana TX Size & Fee: We calculate fees in advance (via RPC). The wallet will warn if the user’s balance is too low to cover fees. This prevents transactions failing unexpectedly.
 
-
 SPL Token Safety: If the user is sending an SPL token, our wallet checks if the destination address has an associated token account; if not, we either prompt to create one or warn the user (some wallets handle this automatically by adding a token account creation instruction; we could implement that to improve UX, but always with clarity to the user).
 
-
 Phantom Compatibility: Because we follow the wallet adapter standard, many Solana dApps will treat our wallet like Phantom. Phantom has a known security model, and we aim to meet or exceed it. For example, Phantom doesn’t expose methods to dApps for arbitrary signing of messages without user consent, and neither do we.
-5.7 Keypair and Seed Safety:
-We strongly encourage the user to back up their seed phrase offline. The app will remind them to save it and possibly have a “backup completed” confirmation. We might even disable certain features until they acknowledge backing up (some wallets do this to stress its importance).
 
+Keypair and Seed Safety:
+We strongly encourage the user to back up their seed phrase offline. The app will remind them to save it and possibly have a “backup completed” confirmation. We might even disable certain features until they acknowledge backing up (some wallets do this to stress its importance).
 
 The seed phrase, once initially shown, is never displayed again unless the user explicitly goes to a “Reveal Secret Phrase” section which is gated behind password and warnings.
 
-
 When importing a seed, we clear it from any UI element as soon as possible (so it’s not lingering in memory longer than needed).
 
-
 We also need to handle when the user wants to remove a wallet – we provide an option to wipe the wallet from the device (for instance, if they are going to uninstall or switch accounts). This will securely delete the stored keys (overwriting memory, etc.).
-5.8 Node.js Server Security:
-The server will validate all incoming requests. For example, if there’s an endpoint to POST a signed transaction, it should ensure the data is correctly formatted (maybe using a JSON schema or manual checks). It won’t ever sign on behalf of the user (since it doesn’t have keys) – thus even if the server is compromised, it can’t directly steal funds (worst it could do is feed bad info or drop transactions).
 
+Node.js Server Security:
+The server will validate all incoming requests. For example, if there’s an endpoint to POST a signed transaction, it should ensure the data is correctly formatted (maybe using a JSON schema or manual checks). It won’t ever sign on behalf of the user (since it doesn’t have keys) – thus even if the server is compromised, it can’t directly steal funds (worst it could do is feed bad info or drop transactions).
 
 The server should be hardened: use the latest Node LTS, avoid using vulnerable dependencies (we’ll run npm audit routinely), and possibly run the server in a Docker container with minimal privileges.
 
-
 If the server provides any admin interface for the dApp list, that will be secured behind authentication and not exposed publicly.
-5.9 Dependency and Update Management: We will monitor updates to Solana libraries (web3.js, wallet adapter, etc.) for security fixes. For example, if a vulnerability is found in a wallet adapter, we would update our app and push the update to users (Electron auto-update, mobile app store update). Our architecture with a central Node also allows some server-side updates without user action (like if we adjust something in the backend for security). We’ll also utilize any fuzzing or static analysis tools available for our Rust code since on-chain programs especially need to be bug-free (and possibly get them audited if they deal with value).
+
+Dependency and Update Management: We will monitor updates to Solana libraries (web3.js, wallet adapter, etc.) for security fixes. For example, if a vulnerability is found in a wallet adapter, we would update our app and push the update to users (Electron auto-update, mobile app store update). Our architecture with a central Node also allows some server-side updates without user action (like if we adjust something in the backend for security). We’ll also utilize any fuzzing or static analysis tools available for our Rust code since on-chain programs especially need to be bug-free (and possibly get them audited if they deal with value).
+
 In summary, the system’s design takes a defense-in-depth approach:
 The wallet is isolated and user-approved at every step.
-
-
 Communications are encrypted and restricted.
-
-
 We align with known secure standards (like Solana Wallet Adapter, which implicitly has security considerations built-in (Interact With Wallets - Solana)).
-
-
 We also educate the user (through UI/UX) about security best practices (for instance, tooltips explaining why not to share their secret phrase, etc.).
 By considering these aspects from the start, we minimize the attack surface of the application and protect both the user’s assets and their data privacy.
-6. UI/UX Design Principles
+
+UI/UX Design Principles
 A great user interface and experience are crucial for an app that aims to introduce users to Web3. We adhere to the following UI/UX design principles to ensure the application is clean, intuitive, and immersive across both desktop and mobile:
-6.1 Consistency and Clarity: The design will maintain a consistent visual language. We’ll establish a theme (colors, typography, iconography) that resonates with the Solana brand (perhaps using its signature purple/teal hues) but also signals trust and modernity. All screens, from wallet to browser, will follow this theme. Consistent placement of elements (e.g., a bottom navigation bar on mobile for “Wallet”, “Browser”, “Settings”) means users can predict where to find things. We avoid clutter – each screen focuses on a primary action (e.g., the wallet screen focuses on showing balances and a “Send” button, the browser screen on listing dApps). Text will be jargon-free or, where blockchain terms are unavoidable, tooltips or info modals will explain them.
-6.2 Responsive and Adaptive Design: The layout will adapt to various screen sizes. On mobile, the design uses a single-column flow, larger touch targets, and common mobile patterns (swipe gestures, pull-to-refresh in the dApp browser if needed, etc.). On tablets or desktop, we can show more information side by side. For instance, on desktop, the wallet sidebar might always be visible while the main area shows the dApp content – enabling quick switching between dApp view and wallet. We also consider orientation changes on mobile (e.g., if user rotates phone while in a dApp). Using Tailwind and React Native’s flexbox layouts makes it easier to create a responsive UI.
 
+Consistency and Clarity: The design will maintain a consistent visual language. We’ll establish a theme (colors, typography, iconography) that resonates with the Solana brand (perhaps using its signature purple/teal hues) but also signals trust and modernity. All screens, from wallet to browser, will follow this theme. Consistent placement of elements (e.g., a bottom navigation bar on mobile for “Wallet”, “Browser”, “Settings”) means users can predict where to find things. We avoid clutter – each screen focuses on a primary action (e.g., the wallet screen focuses on showing balances and a “Send” button, the browser screen on listing dApps). Text will be jargon-free or, where blockchain terms are unavoidable, tooltips or info modals will explain them.
 
-6.3 Intuitive Navigation: Navigation should be straightforward:
+Responsive and Adaptive Design: The layout will adapt to various screen sizes. On mobile, the design uses a single-column flow, larger touch targets, and common mobile patterns (swipe gestures, pull-to-refresh in the dApp browser if needed, etc.). On tablets or desktop, we can show more information side by side. For instance, on desktop, the wallet sidebar might always be visible while the main area shows the dApp content – enabling quick switching between dApp view and wallet. We also consider orientation changes on mobile (e.g., if user rotates phone while in a dApp). Using Tailwind and React Native’s flexbox layouts makes it easier to create a responsive UI.
+
+Intuitive Navigation: Navigation should be straightforward:
 On mobile, use a tab bar or a drawer for main sections. A likely setup: Wallet, Browser, and Settings/Profile tabs. Within the Browser, navigating into a dApp opens a new screen (with its own back button).
-
 
 On the desktop, maybe a sidebar or top menu for similar sections. Possibly a tab system for multiple dApps as mentioned.
 
-
 Users can always get “Home” easily (like tapping the app logo returns to the main screen). There will be a visible back button when deep in a flow, to assure users they can undo an action.
-
 
 Important actions like “Send” (to manually send SOL or tokens) are accessible (maybe a floating action button on the wallet screen).
 We also incorporate smooth transitions between states. For example, when a user taps “Connect” on a dApp, the appearance of the wallet approval modal is animated (slide up or fade in) to feel natural and draw attention. After approval, it fades out to return to the dApp. These micro-interactions add polish.
-6.4 Performance and Feedback: A key part of UX is the app feeling responsive. We ensure:
-Fast Load Times: Use skeleton screens while content loads (for instance, while fetching the dApp list, show placeholders so the UI isn’t blank). For any action that takes more than a second, show a loading spinner or progress bar.
 
+Performance and Feedback: A key part of UX is the app feeling responsive. We ensure:
+Fast Load Times: Use skeleton screens while content loads (for instance, while fetching the dApp list, show placeholders so the UI isn’t blank). For any action that takes more than a second, show a loading spinner or progress bar.
 
 Feedback on Actions: If a user clicks a button, give immediate visual feedback (button highlight states). For network actions like sending a transaction, show a “sending...” status with perhaps an animation (e.g., an animated Solana logo or progress spinner). On success, show a checkmark or success message (and maybe a subtle confetti animation to celebrate, when appropriate – for example, first successful transaction).
 
-
 Error Handling: Should an error occur (network failure, transaction failed, etc.), present a clear error message with possible next steps (“Transaction failed due to insufficient funds. Please top up your account and try again.”). Avoid generic or code-like errors; always translate to human-readable form. Provide retry options for transient errors.
+
 6.5 Mobile-Friendly Interactions: On mobile devices, we leverage native features for a better experience:
 Touch and Gestures: Use swipe gestures for ease – e.g., swiping right on the dApp list might open a menu, or swiping left on a notification could delete it. But we’ll do this only when it’s intuitive and won’t conflict with common gestures.
 
-
 Haptic Feedback: Trigger subtle vibrations on critical actions like approving a transaction (to give a physical confirmation feeling) or on error (a quick double buzz to indicate something went wrong). This tactile feedback makes the app feel more interactive and alive.
 
-
 Keyboard Management: Ensure that forms (like entering a seed phrase or amount to send) are well-managed: the screen scrolls up if needed, the correct keyboard type is shown (numeric for amount, etc.), and “Done” or “Next” buttons on the keyboard do the expected action.
-
 
 Accessibility: Follow accessibility best practices by labeling interactive elements, ensuring good color contrast (especially since some Solana colors are bright, we will tune them not to hurt readability), and allowing font scaling. This ensures the app is usable by people with assistive needs.
 6.6 Immersive Design & Visuals: We want to instill a sense of trust and modernity. Possibly include:
 Animations & Transitions: Not just for feedback, but also decorative ones that don’t impede usability. For example, a slight parallax effect on the background of the dApp list when scrolling, or an animated Solana logo when the app launches (splash screen). We must balance this with performance – any heavy animation should be optimized or able to turn off.
 
-
 Theming (Dark/Light mode): Many users prefer dark mode, especially in crypto apps. We will provide both light and dark themes. Tailwind makes it easy to switch themes (using a toggle and CSS variables). The design will be tested in both to ensure readability. The app could even follow the system theme by default.
 
-
 Visual Cues for Security: UI will use subtle cues to indicate secure or dangerous states. For instance, when a dApp is verified by us, show a badge or a lock icon by its name. If the user is about to send funds to an address not in their contacts, maybe highlight the address in yellow to say “new recipient.” If they paste an address, the app could check if it’s a known scam address (if we maintain a list) and warn them. These cues help guide users safely.
-6.7 Content Strategy: We’ll ensure that all text in the app is clear and helpful:
-Use of tooltips or info icons next to complicated terms (e.g., “Testnet” might have an info icon explaining it’s fake money for testing).
 
+Content Strategy: We’ll ensure that all text in the app is clear and helpful:
+Use of tooltips or info icons next to complicated terms (e.g., “Testnet” might have an info icon explaining it’s fake money for testing).
 
 The Settings section can have a “Help” or “Learn” area linking to documentation or FAQs. Possibly embed a few FAQs directly (“What is a seed phrase?”).
 
-
 For any irreversible action (like removing a wallet or sending a large amount), ask for confirmation (maybe type “confirm”). This prevents accidents.
-6.8 Cross-Platform UX Considerations: While we want a unified experience, we also respect platform conventions:
-On iOS, we’ll use the default back swipe gesture and momentum scrolling in lists to feel native.
 
+Cross-Platform UX Considerations: While we want a unified experience, we also respect platform conventions:
+On iOS, we’ll use the default back swipe gesture and momentum scrolling in lists to feel native.
 
 On Android, the hardware back button will be handled (should navigate back in our app rather than exit abruptly).
 
-
 Desktop users expect some different behavior: e.g., hover tooltips (we can enable those in electron, whereas mobile uses long-press or an info button). Also, context menus on right-click (we might show options like “Copy Address” or “Reload dApp”).
-
 
 Keyboard shortcuts on desktop: e.g., Cmd+R to refresh the dApp page (with a confirmation if there’s a submitted transaction perhaps), or Cmd+L to focus the dApp address bar (if we provide one).
 
-
 Drag and drop: maybe let desktop users drag an image to the app to upload to a dApp if the dApp supports it (ensuring it stays within the sandbox). Not core, but an example of desktop parity.
+
 In essence, the UX goal is that a user with minimal blockchain knowledge can pick up the app and use it intuitively:
 They can create a wallet without confusion.
 
-
 They can find a dApp and understand what it does.
-
 
 When a dApp asks for something (connect or sign), the prompts are self-explanatory.
 
-
 They feel in control and informed at all times (thanks to confirmations and status updates).
 
-
 The app feels snappy and native on whatever device – leveraging each platform’s strengths, but maintaining functional consistency.
+
 By prioritizing simplicity and familiarity (borrowing patterns from standard Web2 apps and existing wallet apps), we lower the learning curve for Web3. At the same time, we add delightful touches (animations, notifications) to make the experience engaging and “fun,” aligning with the excitement around Web3 and Solana’s vibrant ecosystem.
-7. DevOps, Development Workflow and Deployment
+
+DevOps, Development Workflow and Deployment
 To build, test, and deploy this cross-platform system effectively, we will establish a robust development workflow and DevOps pipeline. This ensures that all components (frontend, backend, etc.) work together seamlessly and that we can deliver updates reliably to all platforms.
-7.1 Project Structure & Collaboration: We will use a monorepo (for example, managed by Yarn Workspaces or Nx) to house all parts of the project – this includes the React frontend, React Native app, Node backend, and Rust programs. A monorepo makes it easier to share code (like shared TypeScript types or utility functions) between client and server. Each component has its own directory and build scripts. We use Git for version control. Developers will follow a feature-branch workflow: creating feature branches, going through code reviews via Pull Requests on platforms like GitHub, and merging into a dev or main branch.
-7.2 Development Environments:
+
+Project Structure & Collaboration: We will use a monorepo (for example, managed by Yarn Workspaces or Nx) to house all parts of the project – this includes the React frontend, React Native app, Node backend, and Rust programs. A monorepo makes it easier to share code (like shared TypeScript types or utility functions) between client and server. Each component has its own directory and build scripts. We use Git for version control. Developers will follow a feature-branch workflow: creating feature branches, going through code reviews via Pull Requests on platforms like GitHub, and merging into a dev or main branch.
+
+Development Environments:
 Local Development:
-
-
 Frontend: Developers can run npm start for the React app (launching it on localhost with hot reload) and expo start (or using Expo Go app) for the React Native app. We might create a unified command that spins up both, so they can test interactions (though they’re mostly separate UIs). Electron can be run in dev mode as well (with electron . loading the React dev server).
-
 
 Backend: Run npm run dev for the Node server which starts it on a local port (with perhaps Nodemon for auto-reload on code changes).
 
-
 Blockchain: For quick iteration, developers can use Solana Devnet (no setup needed, just internet). If needed, they can also run solana-test-validator locally to simulate the network entirely offline – beneficial for running backend tests deterministically. The test validator can be started with specific flags (like creating test accounts) as needed (Local Program Development - Solana).
-
 
 Environment variables (managed via .env files) will define things like RPC_URL (devnet vs local), API endpoints, etc., to make switching between dev/staging/prod easy.
 
-
 Testing: We implement tests at multiple levels:
-
 
 Unit tests for utilities (e.g., a function that parses transaction data for display).
 
-
 Component tests for React (using React Testing Library, checking that wallet modals render correctly given props, etc.).
-
 
 Integration tests: e.g., spinning up a headless browser to test the web app connecting to a stub dApp page and ensuring the connect flow works (this can be done with a testing HTML that calls window.solana and verifying the result).
 
-
 Backend tests: using a local Solana validator or devnet with a known account. For example, test that the /api/dapps endpoint returns expected structure, or that when posting a simulated signed transaction the server responds correctly.
 
-
 End-to-end tests: possibly using Detox for mobile (launch app, simulate taps) and Spectron or Playwright for Electron (to automate a click through desktop UI). These ensure the full stack works (wallet creation -> send tx -> see result). Continuous Integration (CI) pipeline on a platform like GitHub Actions or GitLab CI will run these tests on each commit to catch regressions.
-7.3 Continuous Integration & Deployment (CI/CD):
+Continuous Integration & Deployment (CI/CD):
 We set up CI to run on each push: it will lint the code (ESLint, perhaps Prettier), run all tests, and build the projects.
-
 
 For the Rust smart contracts, we include cargo test in CI and maybe anchor test if applicable. Also, ensure the Rust code compiles to BPF (this can be part of CI, using Solana’s tooling to verify no compile errors for on-chain programs).
 
-
 When changes are merged into the main branch and pass tests, we proceed to deployment steps.
-7.4 Backend Deployment:
+Backend Deployment:
 Containerize the Node.js server with Docker. We write a Dockerfile that sets up Node, copies the code, installs dependencies, and starts the server. This image can be deployed to a cloud service (AWS ECS, Google Cloud Run, Heroku, etc.).
-
 
 Use staging and production environments: e.g., a staging server at a different URL that connects to Solana Devnet or Testnet, and a production server that (eventually) connects to mainnet. Initially, both might use Testnet until we are ready for mainnet.
 
-
 Automated Deployment: Use CI/CD to deploy when code is merged to a particular branch. For instance, merging to main triggers deployment to staging (with testnet config), and a manual approval or a tag triggers production deploy.
 
-
 Monitor the backend with logging and alerting. We might integrate a logging service or use something like PM2 to keep it running and gather logs.
-7.5 Frontend Web Deployment:
+Frontend Web Deployment:
 The React web app can be built into static files (npm run build yields an optimized bundle). These can be served via a CDN or static hosting (Netlify, Vercel, or served by our Node server itself). If we anticipate heavy use of the web app, hosting it on a CDN for scalability is good.
-
 
 Since the Electron app uses the same code, the web deployment doubles as a resource for Electron (or we package the files with Electron to be offline).
 
-
 We will version the web app, and likely tie it with the backend version.
-7.6 Mobile App Deployment:
-We will use Expo for development, but for production builds, we might use EAS (Expo Application Services) to build standalone app binaries (APK for Android, IPA for iOS). Alternatively, eject to the bare workflow if needed for deep native customizations.
 
+Mobile App Deployment:
+We will use Expo for development, but for production builds, we might use EAS (Expo Application Services) to build standalone app binaries (APK for Android, IPA for iOS). Alternatively, eject to the bare workflow if needed for deep native customizations.
 
 CI can automate building the app using EAS and even submitting to app stores via fastlane, though initially we might do that manually until stable.
 
-
 We’ll register on Apple App Store and Google Play, ensuring to follow their guidelines (Crypto apps often need certain disclosures).
-
 
 Beta testing: Use TestFlight for iOS and something like Firebase App Distribution or Google Play Internal Testing for Android to allow QA and beta users to test the app before public release.
 
-
 Versioning: We will maintain proper semantic versioning for the app. Each release gets release notes (highlighting new features, fixes). Mobile users will get update notifications via the app stores.
-7.7 Desktop App Deployment:
-For Electron, we can use electron-builder to create installers for Windows (NSIS or AppX), macOS (dmg or zip, signed with Developer ID), and Linux (AppImage or deb).
 
+Desktop App Deployment:
+For Electron, we can use electron-builder to create installers for Windows (NSIS or AppX), macOS (dmg or zip, signed with Developer ID), and Linux (AppImage or deb).
 
 Setting up code signing for Windows and macOS will be necessary to avoid warning dialogs on install.
 
-
 We’ll enable Auto-update using either Electron’s autoUpdater with an update server or service like GitHub Releases. For example, when we publish a new version, the app can detect it and prompt the user to update (or silently download and apply on restart).
 
-
 We might distribute the desktop app via the project website or GitHub releases. If we want broader reach, we could consider listing in Microsoft Store or Mac App Store, but those have additional requirements (especially Mac App Store is restrictive for crypto apps, so likely direct download is fine).
-7.8 Dev/Staging/Production Configurations:
+
+Dev/Staging/Production Configurations:
 Maintain separate config files or environment variables for development, staging, and production. This affects:
-
-
 RPC endpoint (Devnet vs Testnet vs Mainnet)
-
-
 API base URL (local vs staging server vs prod server)
-
-
 Feature flags (we might enable verbose logging or debugging features in dev builds that are off in prod).
-
 
 The mobile and desktop apps built for production will point to the production backend by default. During testing, we’ll point them to staging.
 
-
 Possibly allow an override (like a hidden setting in the app to switch RPC clusters, primarily for internal testing).
 
-
 On the backend, ensure that when pointing to mainnet, all test-specific code (like requesting airdrops) is disabled, and any mainnet-specific configurations (like fee-payer if we sponsor fees, or certain endpoints that differ on mainnet) are handled.
-7.9 Monitoring and Maintenance:
+
+Monitoring and Maintenance:
 Set up monitoring for the backend: use something like Prometheus/Grafana or a cloud monitor to watch uptime, memory usage, and error rates. If the server goes down or errors spike, alert the dev team.
-
-
 On the client side, integrate Sentry or a similar crash reporting tool into the React, React Native, and Electron apps. This will capture any runtime errors or crashes and report them (with user consent, according to privacy policy) to us, so we can fix issues promptly.
 
-
 We’ll also monitor Solana network status (for example, subscribe to Solana status feeds). If Solana devnet is unstable, be ready to direct users to a different cluster or display a notification that the network is having issues (so users know it's not the app’s fault).
-7.10 Deployment of Solana Programs:
-If the project includes deploying custom Solana programs (smart contracts), our workflow will use Anchor to manage that. For dev/test, we can deploy to local validator or devnet in CI (perhaps on every merge we deploy a fresh instance for testing, although devnet persistence might be fine).
 
+Deployment of Solana Programs:
+If the project includes deploying custom Solana programs (smart contracts), our workflow will use Anchor to manage that. For dev/test, we can deploy to local validator or devnet in CI (perhaps on every merge we deploy a fresh instance for testing, although devnet persistence might be fine).
 
 For mainnet, we’ll go through a more manual process, ensuring the program code is audited and then deploying with care (since upgrades are not straightforward without an upgrade authority set).
 
-
 The program IDs and ABIs would be updated in the app as needed (which means if they change, we need to release new app versions or have the app fetch the IDL from a known location).
-7.11 Documentation and Handover:
-Part of the development workflow is maintaining good documentation: a README for how to run the project, and possibly a published doc for users (help center). We might use tools like Storybook to document UI components (useful for design system consistency).
 
+Documentation and Handover:
+Part of the development workflow is maintaining good documentation: a README for how to run the project, and possibly a published doc for users (help center). We might use tools like Storybook to document UI components (useful for design system consistency).
 
 We will keep an architecture document (much like this specification, kept up-to-date with any changes) for new developers joining the project.
 
-
 Use issue tracking (JIRA or GitHub issues) to plan sprints and track progress, ensuring all the features described are implemented and tested.
-By establishing this development and deployment workflow, we ensure that our team can rapidly iterate while maintaining quality. Automated tests and CI/CD catch issues early, and staging environments let us test with real blockchain interactions before users see changes. Because we have multiple platforms (web, mobile, desktop), coordination is key – versioning and compatibility are managed so that, for example, the mobile app and backend remain in sync regarding API endpoints.
-Finally, the deployment strategy emphasizes reliability and user experience: even after deployment, we watch for errors or performance issues and can update the app (especially backend or web) quickly. Our users will always have access to the latest stable version, with minimal friction for updates.
-8. Optional Enhancements
-Beyond the core functionality, there are several enhancements we can incorporate to provide an even richer user experience and future-proof the application:
-8.1 In-App Notifications & Alerts: We touched on this in real-time updates, but expanding it:
-The app can include a notification center listing all relevant events (transaction confirmations, incoming transfers, dApp announcements). We can allow users to customize what they get notified about. For instance, a user might toggle on “Notify me of large incoming transactions” or “Notify me when a new dApp is listed.”
 
+By establishing this development and deployment workflow, we ensure that our team can rapidly iterate while maintaining quality. Automated tests and CI/CD catch issues early, and staging environments let us test with real blockchain interactions before users see changes. Because we have multiple platforms (web, mobile, desktop), coordination is key – versioning and compatibility are managed so that, for example, the mobile app and backend remain in sync regarding API endpoints.
+
+Finally, the deployment strategy emphasizes reliability and user experience: even after deployment, we watch for errors or performance issues and can update the app (especially backend or web) quickly. Our users will always have access to the latest stable version, with minimal friction for updates.
+
+Optional Enhancements
+Beyond the core functionality, there are several enhancements we can incorporate to provide an even richer user experience and future-proof the application:
+
+In-App Notifications & Alerts: We touched on this in real-time updates, but expanding it:
+The app can include a notification center listing all relevant events (transaction confirmations, incoming transfers, dApp announcements). We can allow users to customize what they get notified about. For instance, a user might toggle on “Notify me of large incoming transactions” or “Notify me when a new dApp is listed.”
 
 Integration with device notifications means even if the user isn’t actively using the app, they get important alerts. On mobile, we would integrate with Firebase Cloud Messaging (for Android) and APNs (for iOS) possibly via Expo’s notification service. For example, if a friend sends them some SOL and our backend picks that up (via websockets or polling), we could send a push notification “You received 1 SOL from Alice!”
 
-
 Similarly, on the desktop, Electron can display a system tray notification. We’ll include controls so these notifications aren’t intrusive if the user wants quiet.
 
-
 For dApp-specific notifications: perhaps the user can subscribe to a particular dApp’s news (if provided via an RSS or API feed) and our app could surface those (e.g., a DeFi dApp listing a new pool – the app could notify subscribed users).
-8.2 Multi-Wallet/Account Support:
-We plan for one wallet initially, but scaling to multi-wallet would let users manage multiple sets of keys. We could allow the user to add multiple accounts under the hood of the same seed (Solana can derive multiple accounts from one mnemonic using different derivation indices), or entirely separate keypairs.
 
+Multi-Wallet/Account Support:
+We plan for one wallet initially, but scaling to multi-wallet would let users manage multiple sets of keys. We could allow the user to add multiple accounts under the hood of the same seed (Solana can derive multiple accounts from one mnemonic using different derivation indices), or entirely separate keypairs.
 
 The UI would then have an account switcher (similar to how Gmail app switches accounts or Phantom’s multiple wallet feature). Each account is isolated in terms of balance and usage, but the user can easily switch which one is active for dApps. This is useful e.g., to have a “test account” and a “main account” or segregate by use-case.
 
-
 Implementation: our secure storage would then hold multiple encrypted keys, labeled maybe by account name. When the user switches, the wallet adapter exposes the new public key to dApps (likely triggering a disconnect/connect sequence).
-
 
 We must ensure that switching is obvious to the user so they know which account they are using in a dApp at any given time. Maybe display the account nickname or the first and last characters of address in the nav bar.
 
-
 If multi-wallet is complex for v1, a simpler interim is to allow one wallet but easy export/import so power users can switch by importing another key when needed (less elegant though).
-8.3 Offline Mode & Caching:
+
+Offline Mode & Caching:
 We aim for functionality even with limited connectivity. An offline mode could allow the user to:
-
-
 Open the app and view their portfolio (balances as of last sync, transaction history that was cached).
-
-
 Perhaps compose transactions (like prepare a transfer) while offline and queue them to send later. This requires storing the signed transaction until connectivity returns. However, care: Solana blockhash will expire (~2 mins), so the transaction might not be valid by the time it’s sent. A workaround is generating the transaction but not signing until online, or allowing users to save it to sign later.
-
 
 Browse the dApp list (if cached) and read descriptions, though obviously they cannot launch the live dApp without the internet. We could explore a feature like offline dApp pages if dApps provide some manifest or we cache their last loaded state, but that’s advanced and likely not generally feasible.
 
-
 To support offline data, we implement a persistent cache:
-
 
 Use IndexedDB or local storage (or SQLite for RN) to save key data like the dApp directory (update it when online).
 
-
 Save recent transactions and balances. Perhaps sync the last 50 transactions for the user’s account and store them. That way, in offline mode, they can still open the app and see “You have 2 SOL (last updated 3 hours ago)” and a list of transactions/NFTs from history.
-
 
 We also cache things like token metadata (names, logos) so that even offline the UI can show “You have 5 $USDC” instead of an unknown token.
 
-
-The app should gracefully detect offline status (using network info APIs) and switch to an Offline UI state, informing the user with a banner “You are offline. Some features are unavailable.” But still allow navigation through cached info.
-
-
-Once connection is restored, the app will sync any queued actions and update the cache.
-
-
+The app should gracefully detect offline status (using network info APIs) and switch to an Offline UI state, informing the user with a banner “You are offline. Some features are unavailable.” But still allow navigation through cached info.   Once connection is restored, the app will sync any queued actions and update the cache.
 This offline capability not only improves resilience but also performance (cache can speed up load of data on app start).
-8.4 Cross-Chain or Multi-Chain Possibilities: Though our focus is Solana, the architecture (React, Node, wallet injection) could extend to other chains. If future expansion is considered:
-We could integrate support for other networks in the browser, e.g., Ethereum dApps. This would mean supporting an EVM wallet (which our architecture could handle by adding an Ethereum account and using web3 providers injection). While not in scope now, the modular design of wallet adapter injection means in theory our app could switch context based on dApp chain.
 
+Cross-Chain or Multi-Chain Possibilities: Though our focus is Solana, the architecture (React, Node, wallet injection) could extend to other chains. If future expansion is considered: We could integrate support for other networks in the browser, e.g., Ethereum dApps. This would mean supporting an EVM wallet (which our architecture could handle by adding an Ethereum account and using web3 providers injection). While not in scope now, the modular design of wallet adapter injection means in theory our app could switch context based on dApp chain.
 
 Solana’s wallet adapter doesn’t inherently do other chains, but we could incorporate something like WalletConnect for non-Solana dApps if desired as an enhancement.
-8.5 DApp Integrations: We can think of deeper integration with dApps:
+dApp Integrations: We can think of deeper integration with dApps:
 For example, a dApp store rating system: users can rate or review dApps within our app. This would require a backend component (and possibly on-chain submission of reviews to avoid spam).
-
 
 Social features: Being a browser, perhaps allow users to share a dApp link or their experience with friends (e.g., deep link to a specific dApp inside our app).
 
-
 DApp Context Saving: The app could remember where you left off in a dApp. If you switch dApps or close the app, next time it could restore the last visited dApp (like browsers reopen tabs). This is an enhancement for user convenience.
-8.6 Analytics and Improvements: (Internal enhancement)
-Integrate privacy-preserving analytics to understand feature usage. For instance, track how many times users connect to various dApps (without logging their personal info or addresses), so we know which dApps are popular and can highlight them or optimize for them.
 
+Analytics and Improvements: (Internal enhancement)
+Integrate privacy-preserving analytics to understand feature usage. For instance, track how many times users connect to various dApps (without logging their personal info or addresses), so we know which dApps are popular and can highlight them or optimize for them.
 
 Track performance metrics (screen load times, transaction times) to find bottlenecks.
 
-
 This helps in iterative improvement of the app’s UX.
-8.7 Integration with Solana Saga (Mobile-Specific):
+Integration with Solana Saga (Mobile-Specific):
 Solana’s Saga phone provides a secure element (Seed Vault) and Mobile Wallet Adapter. Our app could detect if it’s running on Saga and then use Saga’s native wallet instead of our own, or integrate with the Seed Vault to store keys (increasing security). This would make our app “Saga-ready”. It’s an optional platform enhancement for users who have that device.
 
-
-Use of Android intents via the Mobile Wallet Adapter protocol could allow our app to serve as either a wallet or dApp in that ecosystem too.
-Each of these enhancements can be added in a modular way, ensuring the core system is not over-complicated initially. We would likely prioritize based on user feedback:
+Use of Android intents via the Mobile Wallet Adapter protocol could allow our app to serve as either a wallet or dApp in that ecosystem too.  Each of these enhancements can be added in a modular way, ensuring the core system is not over-complicated initially. We would likely prioritize based on user feedback:
 Notifications and multi-account support are high-value for power users.
 
-
 Offline mode is great for reliability (and some users with limited connectivity).
-
 
 Other enhancements like ratings, cross-chain might come later as the user base grows.
 By outlining these, we keep a roadmap in mind for the system to evolve beyond the initial specification, reinforcing the system’s goal: to be a one-stop, user-friendly gateway to the Solana (and broader Web3) world, on any device.
 
 ScreenShots:
 
-<img width="1792" alt="image" src="https://github.com/user-attachments/assets/35012ae6-15a4-495b-8968-e51c6e07fc3b" />
-&nbsp;
-&nbsp;
-&nbsp;
-&nbsp;
-&nbsp;
 
-<img width="1792" alt="image" src="https://github.com/user-attachments/assets/10a09454-f099-436f-9370-bba184d20b73" />
-&nbsp;
-&nbsp;
-&nbsp;
-&nbsp;
-&nbsp;
-
-<img width="1792" alt="image" src="https://github.com/user-attachments/assets/dbc700cd-e69f-47c7-a00d-e1d00d0c3320" />
-&nbsp;
-&nbsp;
-&nbsp;
-&nbsp;
-&nbsp;
-
-
-<img width="1792" alt="image" src="https://github.com/user-attachments/assets/94c4a0b2-17ef-49bd-9fdf-d53be969f575" />
-&nbsp;
-&nbsp;
-&nbsp;
-&nbsp;
-&nbsp;
-
-
-<img width="1792" alt="image" src="https://github.com/user-attachments/assets/c85b6932-6c02-4589-8fc2-741e1879c029" />
-&nbsp;
-&nbsp;
-&nbsp;
-&nbsp;
-&nbsp;
-
-
-<img width="1792" alt="image" src="https://github.com/user-attachments/assets/c209aa9f-6844-4187-9774-8bc601f464f8" />
-&nbsp;
-&nbsp;
-&nbsp;
-&nbsp;
-&nbsp;
-
-
-<img width="1792" alt="image" src="https://github.com/user-attachments/assets/533c5926-3056-46aa-8ae8-2e4d34a45d22" />
-&nbsp;
-&nbsp;
-&nbsp;
-&nbsp;
-&nbsp;
-
-
-<img width="1792" alt="image" src="https://github.com/user-attachments/assets/7faec1d5-a151-44a3-a223-616fcf1b9a41" />
-&nbsp;
-&nbsp;
-&nbsp;
-&nbsp;
-&nbsp;
-
-
-<img width="1792" alt="image" src="https://github.com/user-attachments/assets/781a413d-1ec3-4bdf-abf5-d9ee54a0aedf" />
-&nbsp;
-&nbsp;
-&nbsp;
-&nbsp;
-&nbsp;
-
-
-<img width="1792" alt="image" src="https://github.com/user-attachments/assets/6070e0bf-2dd3-46d9-9528-d0f977a2a568" />
-&nbsp;
-&nbsp;
-&nbsp;
-&nbsp;
-&nbsp;
-
-
-<img width="1792" alt="image" src="https://github.com/user-attachments/assets/1067e984-455e-474f-a727-e44377056ca6" />
-&nbsp;
-&nbsp;
-&nbsp;
-&nbsp;
-&nbsp;
-
-
-<img width="1792" alt="image" src="https://github.com/user-attachments/assets/dc46ce60-19e6-43f2-b3a1-4c894b69c5a3" />
-&nbsp;
-&nbsp;
-&nbsp;
-&nbsp;
-&nbsp;
-
-
-<img width="1792" alt="image" src="https://github.com/user-attachments/assets/4b6b45ba-0961-4ae7-a099-b4cd8853c7ec" />
-&nbsp;
-&nbsp;
-&nbsp;
-&nbsp;
-&nbsp;
-
-
-<img width="1792" alt="image" src="https://github.com/user-attachments/assets/86216fdc-8a51-4d7a-bfe7-549e15fd0c3a" />
-&nbsp;
-&nbsp;
-&nbsp;
-&nbsp;
-&nbsp;
-
-
-<img width="1792" alt="image" src="https://github.com/user-attachments/assets/3873a9d9-6eb4-45ac-8078-7947440d1f3e" />
 
 
 
