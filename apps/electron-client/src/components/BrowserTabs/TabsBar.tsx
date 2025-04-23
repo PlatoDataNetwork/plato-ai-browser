@@ -37,7 +37,7 @@ export function TabsBar({ tabs, activeTab, onTabChange, onNewTab, onCloseTab }: 
         <div className="flex items-center h-8">
             <div
             onClick={onNewTab}
-            className="flex items-center justify-center w-6 h-6 bg-[#1e2235] rounded-full cursor-pointer hover:bg-[#3d4569]"
+            className="flex items-center justify-center w-6 h-6 bg-[#0e0e0e] rounded-full cursor-pointer hover:bg-[#3d4569]"
             >
             <Plus size={16} className="text-white" />
             </div>

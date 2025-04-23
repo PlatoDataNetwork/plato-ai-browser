@@ -382,29 +382,29 @@ export function HomeContent({ onNavigate }: HomeContentProps) {
     const totalPages = Math.ceil((data as DappData[]).length / itemsPerPage);
   
     return (
-      <div className="w-full overflow-x-auto bg-[#0a0a0a] border border-[#ffffff24] rounded-xl shadow-lg">
+      <div className="w-full overflow-x-auto  border border-[#ffffff24] rounded-xl shadow-lg">
         <table className="w-full min-w-full">
           <thead>
             <tr className="border-b border-[#ffffff24]">
-              <th className="px-6 py-3 text-left text-md font-medium  text-[#ededed]">#</th>
-              <th className="px-6 py-3 text-left text-md font-medium  text-[#ededed]">Name</th>
-              <th className="px-6 py-3 text-right text-md font-medium  text-[#ededed]">Balance</th>
-              <th className="px-6 py-3 text-right text-md font-medium  text-[#ededed]">UAW</th>
-              <th className="px-6 py-3 text-right text-md font-medium  text-[#ededed]">% UAW</th>
-              <th className="px-6 py-3 text-right text-md font-medium  text-[#ededed]">Volume</th>
-              <th className="px-6 py-3 text-right text-md font-medium  text-[#ededed]">% Volume</th>
+              <th className="px-6 py-3 text-left text-md font-medium  text-[#04a1ff]">#</th>
+              <th className="px-6 py-3 text-left text-md font-medium  text-[#04a1ff]">Name</th>
+              <th className="px-6 py-3 text-right text-md font-medium  text-[#04a1ff]">Balance</th>
+              <th className="px-6 py-3 text-right text-md font-medium  text-[#04a1ff]">UAW</th>
+              <th className="px-6 py-3 text-right text-md font-medium  text-[#04a1ff]">% UAW</th>
+              <th className="px-6 py-3 text-right text-md font-medium  text-[#04a1ff]">Volume</th>
+              <th className="px-6 py-3 text-right text-md font-medium  text-[#04a1ff]">% Volume</th>
             </tr>
           </thead>
           <tbody>
             {paginatedData().map((dapp, index) => (
-              <tr key={dapp.id} className="hover:bg-[#3d4569] border-b border-[#ffffff24]">
-                <td className="px-6 py-4 text-sm text-[#ededed]">
+              <tr key={dapp.id} className="hover:bg-[#0e0e0e] border-b border-[#ffffff24]">
+                <td className="px-6 py-4 text-sm text-[#04a1ff]">
                   {(currentPage - 1) * itemsPerPage + index + 1}
                 </td>
                 <td className="px-6 py-4">
                   <div className="flex items-center">
                     <img src={dapp.logo} alt={dapp.name} className="w-8 h-8 rounded-full mr-3" />
-                    <span className="text-sm font-medium  text-[#ededed]">{dapp.name}</span>
+                    <span className="text-sm font-medium  text-[#04a1ff]">{dapp.name}</span>
                   </div>
                 </td>
                 <td className="px-6 py-4 text-right text-sm text-gray-500">
@@ -434,7 +434,7 @@ export function HomeContent({ onNavigate }: HomeContentProps) {
         {/* Update pagination controls styling */}
         <div className="flex items-center justify-between px-6 py-3 border-t border-[#ffffff24]">
           <div className="flex items-center">
-            <span className="text-sm text-[#ededed]">
+            <span className="text-sm text-[#04a1ff]">
               Showing {((currentPage - 1) * itemsPerPage) + 1} to {Math.min(currentPage * itemsPerPage, (data as DappData[]).length)} of {(data as DappData[]).length} entries
             </span>
           </div>
@@ -445,14 +445,14 @@ export function HomeContent({ onNavigate }: HomeContentProps) {
               className={`px-3 py-1 rounded-md ${
                 currentPage === 1 
                   ? 'bg-[#1a1b26] text-[#666] cursor-not-allowed' 
-                  : 'bg-[#3d4569] text-white hover:bg-[#3d4569]'
+                  : 'bg-[#0e0e0e] text-white hover:bg-[#0e0e0e]'
               }`}
             >
               Previous
             </button>
             {getPageNumbers(currentPage, totalPages).map((page, index) => (
               page === '...' ? (
-                <span key={`ellipsis-${index}`} className="px-3 py-1 text-[#ededed]">
+                <span key={`ellipsis-${index}`} className="px-3 py-1 text-[#04a1ff]">
                   {page}
                 </span>
               ) : (
@@ -461,8 +461,8 @@ export function HomeContent({ onNavigate }: HomeContentProps) {
                   onClick={() => setCurrentPage(Number(page))}
                   className={`px-3 py-1 rounded-md ${
                     currentPage === Number(page)
-                      ? 'bg-[#3d4569] text-white'
-                      : 'bg-[#1a1b26] text-[#ededed] hover:bg-[#32334a]'
+                      ? 'bg-[#0e0e0e] text-white'
+                      : 'bg-[#1a1b26] text-[#04a1ff] hover:bg-[#32334a]'
                   }`}
                 >
                   {page}
@@ -475,7 +475,7 @@ export function HomeContent({ onNavigate }: HomeContentProps) {
               className={`px-3 py-1 rounded-md ${
                 currentPage === totalPages 
                   ? 'bg-[#1a1b26] text-[#666] cursor-not-allowed' 
-                  : 'bg-[#3d4569] text-white hover:bg-purple-600'
+                  : 'bg-[#0e0e0e] text-white hover:bg-purple-600'
               }`}
             >
               Next
@@ -494,7 +494,7 @@ export function HomeContent({ onNavigate }: HomeContentProps) {
             <button
               key={link.name}
               onClick={() => onNavigate(link.url)}
-              className="group flex flex-col items-center bg-[#0a0a0a] border border-[#ffffff24] cursor-pointer rounded-[24px] p-6 hover:shadow-lg hover:shadow-purple-500/10 transition-all duration-300"
+              className="group flex flex-col items-center  border border-[#ffffff24] cursor-pointer rounded-[24px] p-6 hover:shadow-lg hover:shadow-purple-500/10 transition-all duration-300"
             >
               <div className="w-full flex items-center justify-center mb-4">
                 <img 
@@ -503,8 +503,8 @@ export function HomeContent({ onNavigate }: HomeContentProps) {
                   className="w-15 h-15 rounded-xl object-cover"
                 />
               </div>
-              <span className="text-md font-bold text-[#ededed] text-center line-clamp-1">{link.name}</span>
-              <span className="text-sm text-[#a1a1a1] mt-1.5">{link.category}</span>
+              <span className="text-md font-bold text-[#04a1ff] text-center line-clamp-1">{link.name}</span>
+              <span className="text-sm text-[#fff] mt-1.5">{link.category}</span>
             </button>
           ))}
         </div>
@@ -516,7 +516,7 @@ export function HomeContent({ onNavigate }: HomeContentProps) {
             <button
               key={agent.name}
               onClick={() => onNavigate(agent.link)}
-              className="group flex flex-col items-center  bg-[#0a0a0a] border border-[#ffffff24] cursor-pointer rounded-[24px] p-6 hover:shadow-lg hover:shadow-purple-500/10 transition-all duration-300"
+              className="group flex flex-col items-center   border border-[#ffffff24] cursor-pointer rounded-[24px] p-6 hover:shadow-lg hover:shadow-purple-500/10 transition-all duration-300"
             >
               <div className="w-full flex items-center justify-center mb-4">
                 <img 
@@ -525,8 +525,8 @@ export function HomeContent({ onNavigate }: HomeContentProps) {
                   className="w-15 h-15 rounded-xl object-cover"
                 />
               </div>
-              <span className="text-md font-bold text-[#ededed] text-center line-clamp-1">{agent.name}</span>
-              <span className="text-sm text-[#a1a1a1] mt-1.5">{agent.category}</span>
+              <span className="text-md font-bold text-[#04a1ff] text-center line-clamp-1">{agent.name}</span>
+              <span className="text-sm text-[#fff] mt-1.5">{agent.category}</span>
             </button>
           ))}
         </div>
@@ -545,7 +545,7 @@ export function HomeContent({ onNavigate }: HomeContentProps) {
               key={tab}
               onClick={() => setActiveTab(tab)}
               className={`px-4 py-2 rounded-xl transition-all duration-300 ${
-                activeTab === tab ? 'bg-gradient-to-br from-purple-500 to-blue-500 text-white shadow-lg' : 'bg-[#3d4569] text-white hover:bg-[#32334a]'
+                activeTab === tab ? 'bg-[#04a1ff] text-white shadow-lg' : 'bg-[#0e0e0e] text-white hover:bg-[#32334a]'
               }`}
             >
               {tab}

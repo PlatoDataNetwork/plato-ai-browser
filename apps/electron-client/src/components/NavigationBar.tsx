@@ -80,7 +80,7 @@ export function NavigationBar({
         />
         
         {/* Rest of the navigation bar remains the same */}
-      <div className="flex items-center h-10 bg-[#1e2235] rounded-md px-2 gap-1">
+      <div className="flex items-center h-10 bg-[#0a0a0a] rounded-md px-2 gap-1">
         <div className="flex items-center gap-1">
           <div
             onClick={!canGoBack ? undefined : onBack}
