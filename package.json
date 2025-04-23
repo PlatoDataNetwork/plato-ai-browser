@@ -3,10 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
+    "dev": "cd apps/electron-client && next dev --turbopack",
+    "build": "cd apps/electron-client && next build",
+    "start": "cd apps/electron-client && next start",
+    "lint": "cd apps/electron-client && next lint"
   },
   "dependencies": {
     "@solana/wallet-adapter-base": "^0.9.24",
